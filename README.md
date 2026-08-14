@@ -1,2 +1,2 @@
-# PRAC1-CHESSI
+# PRAC-1-CHESSI
 it's platform where you can play chess online with real player .
