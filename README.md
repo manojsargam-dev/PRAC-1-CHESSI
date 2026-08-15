@@ -1,2 +1,2 @@
 # PRAC-1-CHESSI
-it's platform where you can play chess online with real player .
+"Chessi is an interactive online chess platform where players can challenge real opponents in live matches, track their progress, and enjoy a seamless gameplay experience powered by modern web technologies. With real‑time move validation, multiplayer support, and a clean interface, it brings the excitement of classic chess into a dynamic digital space — making it easy to play, compete, and connect with fellow enthusiasts worldwide."
