@@ -4,7 +4,7 @@ import {Server} from 'socket.io'
 import {Chess} from 'chess.js';
 import path from 'path';
 import { fileURLToPath } from "url";
-import gameRoute from "./Routes/gameRoute.ts"
+import gameRoute from "./routes/gameRoute.ts"
 
 const __filename:string = fileURLToPath(import.meta.url);
 const __dirname:string = path.dirname(__filename);
