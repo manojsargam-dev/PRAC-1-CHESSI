@@ -5,6 +5,7 @@ import {Chess} from 'chess.js';
 import path from 'path';
 import { fileURLToPath } from "url";
 import gameRoute from "./routes/gameRoute.ts"
+import { basic } from './sockets/chessSocket.ts';
 
 const __filename:string = fileURLToPath(import.meta.url);
 const __dirname:string = path.dirname(__filename);
@@ -25,6 +26,7 @@ app.use("/api/chess",gameRoute)
 
 io.on("connection",(socket)=>{
     console.log("connected");
+    basic(io,socket)
 })
 
 export default server;
