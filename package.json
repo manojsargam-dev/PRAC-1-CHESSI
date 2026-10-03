@@ -1,7 +1,7 @@
 {
   "name": "chessi",
   "version": "1.0.0",
-  "description": "",
+  "description": "Online multiplayer chess game",
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
@@ -11,12 +11,20 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "lint": "eslint src --ext .ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No tests specified\""
   },
-  "keywords": [],
+  "keywords": [
+    "chess",
+    "socket.io",
+    "multiplayer",
+    "chessi"
+  ],
   "author": "",
   "license": "ISC",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/chess.js": "^0.13.7",
