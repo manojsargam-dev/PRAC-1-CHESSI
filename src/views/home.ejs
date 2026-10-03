@@ -1,18 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CHESSI</title>
-    <link rel="stylesheets" src="/css/style1.css"> 
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="/icons/f.png">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style1.css">
 </head>
-<body>
-    <script src="https://cdn.socket.io/4.8.3/socket.io.min.js" integrity="sha384-kzavj5fiMwLKzzD1f8S7TeoVIEi7uKHvbTA3ueZkrzYq75pNQUiUi6Dy98Q3fxb0" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js" integrity="sha512-xRllwz2gdZciIB+AkEbeq+gVhX8VB8XsfqeFbUh+SzHlN96dEduwtTuVuc2u9EROlmW9+yhRlxjif66ORpsgVA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <h1>WELCOME TO CHESSI</h1>
-    <script src="/js/js1.js"></script>
-    <div class="playersarea">
 
-    </div>
+<body>
+
+    <script src="https://cdn.socket.io/4.8.3/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+
+    <main class="app">
+
+        <section class="welcome-section">
+
+            <div class="logo-container">
+                <img src="/assets/f.png" alt="CHESSI Logo" class="chessi-logo">
+            </div>
+
+            <p class="welcome-small">Welcome to</p>
+
+            <h1 class="chessi-title">CHESSI</h1>
+
+            <div class="welcome-divider">
+                <span></span>
+                <span class="crown">♛</span>
+                <span></span>
+            </div>
+
+            <p class="welcome-tagline">
+                Play <b>•</b> Connect <b>•</b> Challenge
+            </p>
+
+        </section>
+
+
+        <section class="board-area">
+
+            <div class="captured-top">
+                <div id="capturedBlackElement" class="captured-group" aria-label="Captured black pieces">
+                </div>
+            </div>
+
+            <section class="board-shell" aria-label="Interactive chess board">
+
+                <div class="top-coordinates" aria-hidden="true">
+
+                    <span>A</span>
+                    <span>B</span>
+                    <span>C</span>
+                    <span>D</span>
+                    <span>E</span>
+                    <span>F</span>
+                    <span>G</span>
+                    <span>H</span>
+
+                </div>
+
+
+                <div class="middle">
+
+                    <div class="side-coordinates left" aria-hidden="true">
+
+                        <span>8</span>
+                        <span>7</span>
+                        <span>6</span>
+                        <span>5</span>
+                        <span>4</span>
+                        <span>3</span>
+                        <span>2</span>
+                        <span>1</span>
+
+                    </div>
+
+
+                    <div class="board-wrap">
+
+                        <div id="board" class="board">
+                        </div>
+
+                        <svg id="moveOverlay" class="move-overlay" viewBox="0 0 800 800" preserveAspectRatio="none"
+                            aria-hidden="true">
+                        </svg>
+
+                    </div>
+
+
+                    <div class="side-coordinates right" aria-hidden="true">
+
+                        <span>8</span>
+                        <span>7</span>
+                        <span>6</span>
+                        <span>5</span>
+                        <span>4</span>
+                        <span>3</span>
+                        <span>2</span>
+                        <span>1</span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="bottom-coordinates" aria-hidden="true">
+
+                    <span>A</span>
+                    <span>B</span>
+                    <span>C</span>
+                    <span>D</span>
+                    <span>E</span>
+                    <span>F</span>
+                    <span>G</span>
+                    <span>H</span>
+
+                </div>
+
+            </section>
+
+
+            <div class="captured-bottom">
+
+                <div id="capturedWhiteElement" class="captured-group" aria-label="Captured white pieces">
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="game-panel">
+
+            <div class="top-controls">
+
+                <button id="newGame">
+                    New Game
+                </button>
+
+                <button id="createRoom">
+                    Create Room
+                </button>
+
+                <input type="text" id="roomInput" placeholder="ROOM CODE" maxlength="6" autocomplete="off">
+
+                <button id="joinRoom">
+                    Join Room
+                </button>
+
+            </div>
+
+
+            <p id="roomStatus">
+                Create a room or join a room
+            </p>
+
+
+            <p id="status">
+                Waiting for player
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <script src="/js/js1.js"></script>
+
 </body>
+
 </html>

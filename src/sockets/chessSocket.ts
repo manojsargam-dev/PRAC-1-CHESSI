@@ -1,56 +1,246 @@
-import { BLACK, WHITE } from "chess.js";
+import { BLACK, WHITE, Chess } from "chess.js";
 import { Server, Socket } from "socket.io";
-import { chess } from "../app.ts";
 
-interface users {
-    white?:string;
-    black?:string;
+interface Room {
+    chess: Chess;
+    white: string | undefined;
+    black: string | undefined;
 }
 
-let players:users = {white:'',black:''};
-let currentPlayer:"w"|"b" = WHITE;
+const rooms = new Map<string, Room>();
 
-export const userColor = (io:Server,socket:Socket)=>{
-    if(!players.white){
-        players.white= socket.id;
-        socket.emit("playercolor",WHITE);
-    }
-    else if(!players.black){
-        players.black = socket.id;
-        socket.emit("playercolor",BLACK);
-    }
-    else{
-        socket.emit("spectator","spectator");
-    }
-} 
+function createRoomId() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let roomId = "";
 
-export const userdisconnection = (io:Server,socket:Socket)=>{
-    socket.on("disconnect",()=>{
-        (socket.id === players.white)?(delete players.white):(socket.id === players.black)?(delete players.black):("Connection Error")
-        console.log("disconnected");
-    })
+    for (let i = 0; i < 6; i++) {
+        roomId += chars[Math.floor(Math.random() * chars.length)];
+    }
+
+    return roomId;
 }
 
-export const playermoves =(io:Server,socket:Socket)=>{
-    socket.on("move",(move)=>{
+function sendGameState(io: Server, roomId: string) {
+    const room = rooms.get(roomId);
+
+    if (!room) return;
+
+    io.to(roomId).emit("gameStatus", {
+        turn: room.chess.turn(),
+        white: !!room.white,
+        black: !!room.black,
+        check: room.chess.isCheck(),
+        checkmate: room.chess.isCheckmate(),
+        draw: room.chess.isDraw(),
+        gameOver: room.chess.isGameOver()
+    });
+}
+
+function sendBoardState(io: Server, roomId: string) {
+    const room = rooms.get(roomId);
+
+    if (!room) return;
+
+    io.to(roomId).emit("boardState", room.chess.fen());
+}
+
+export const createRoom = (io: Server, socket: Socket) => {
+    let roomId = createRoomId();
+
+    while (rooms.has(roomId)) {
+        roomId = createRoomId();
+    }
+
+    const room: Room = {
+        chess: new Chess(),
+        white: socket.id,
+        black: undefined
+    };
+
+    rooms.set(roomId, room);
+
+    socket.join(roomId);
+    socket.data.roomId = roomId;
+    socket.data.color = WHITE;
+
+    socket.emit("roomCreated", roomId);
+    socket.emit("playerColor", WHITE);
+    socket.emit("boardState", room.chess.fen());
+
+    sendGameState(io, roomId);
+
+    console.log(`ROOM CREATED: ${roomId}`);
+    console.log(`WHITE PLAYER: ${socket.id}`);
+};
+
+export const joinRoom = (io: Server, socket: Socket) => {
+    socket.on("joinRoom", (roomId: string) => {
+        const id = roomId.trim().toUpperCase();
+        const room = rooms.get(id);
+
+        if (!room) {
+            socket.emit("roomError", "Room not found.");
+            return;
+        }
+
+        if (room.black) {
+            socket.emit("roomError", "Room is full.");
+            return;
+        }
+
+        if (socket.data.roomId) {
+            socket.emit("roomError", "You are already in a room.");
+            return;
+        }
+
+        room.black = socket.id;
+
+        socket.join(id);
+        socket.data.roomId = id;
+        socket.data.color = BLACK;
+
+        socket.emit("roomJoined", id);
+        socket.emit("playerColor", BLACK);
+        socket.emit("boardState", room.chess.fen());
+
+        sendGameState(io, id);
+
+        console.log(`BLACK PLAYER: ${socket.id}`);
+        console.log(`JOINED ROOM: ${id}`);
+    });
+};
+
+export const playermoves = (io: Server, socket: Socket) => {
+    socket.on("move", (move) => {
         try {
-        let res:boolean = (chess.turn()=== WHITE && socket.id !== players.white)?(false):(chess.turn()=== BLACK && socket.id !== players.black)?(false):(true);
-        if(res===false) return;
+            const roomId = socket.data.roomId;
+            const color = socket.data.color;
 
-        const result = chess.move(move);
-        if(result){
-            currentPlayer = (currentPlayer === WHITE)?(chess.turn()):(chess.turn());
-            io.emit("move",move);
-            io.emit("boardState",chess.fen()); 
-        }
-        else{
-            console.log("invalid move : ",move);
-            socket.emit("invalidMove",move);
-        }
+            if (!roomId || !color) {
+                socket.emit("invalidMove", {
+                    message: "You are not in a game."
+                });
+                return;
+            }
 
+            const room = rooms.get(roomId);
+
+            if (!room) {
+                socket.emit("invalidMove", {
+                    message: "Room not found."
+                });
+                return;
+            }
+
+            if (room.chess.isGameOver()) {
+                socket.emit("invalidMove", {
+                    message: "Game is already over."
+                });
+                return;
+            }
+
+            if (room.chess.turn() !== color) {
+                socket.emit("invalidMove", {
+                    message: "It is not your turn."
+                });
+                return;
+            }
+
+            const result = room.chess.move({
+                from: move.from,
+                to: move.to,
+                promotion: move.promotion || "q"
+            });
+
+            if (!result) {
+                socket.emit("invalidMove", {
+                    message: "Invalid chess move."
+                });
+                return;
+            }
+
+            console.log(
+                `${result.color === WHITE ? "WHITE" : "BLACK"}:`,
+                `${result.from} -> ${result.to}`,
+                result.san
+            );
+
+            io.to(roomId).emit("move", {
+                from: result.from,
+                to: result.to,
+                san: result.san,
+                color: result.color,
+                captured: result.captured || null,
+                promotion: result.promotion || null
+            });
+
+            sendBoardState(io, roomId);
+            sendGameState(io, roomId);
         } catch (error) {
-            console.error(error);
-            socket.emit("invalidMove",move);
+            console.error("MOVE ERROR:", error);
+
+            socket.emit("invalidMove", {
+                message: "Invalid move."
+            });
         }
-    })
-}
+    });
+};
+
+export const newGame = (io: Server, socket: Socket) => {
+    socket.on("newGame", () => {
+        const roomId = socket.data.roomId;
+
+        if (!roomId) return;
+
+        const room = rooms.get(roomId);
+
+        if (!room) return;
+
+        if (
+            socket.id !== room.white &&
+            socket.id !== room.black
+        ) {
+            return;
+        }
+
+        room.chess.reset();
+
+        console.log(`GAME RESET: ${roomId}`);
+
+        io.to(roomId).emit("boardState", room.chess.fen());
+        io.to(roomId).emit("gameReset");
+
+        sendGameState(io, roomId);
+    });
+};
+
+export const userdisconnection = (io: Server, socket: Socket) => {
+    socket.on("disconnect", () => {
+        const roomId = socket.data.roomId;
+
+        if (!roomId) return;
+
+        const room = rooms.get(roomId);
+
+        if (!room) return;
+
+        if (socket.id === room.white) {
+            room.white = undefined;
+            console.log(`WHITE DISCONNECTED: ${roomId}`);
+        }
+
+        if (socket.id === room.black) {
+            room.black = undefined;
+            console.log(`BLACK DISCONNECTED: ${roomId}`);
+        }
+
+        socket.leave(roomId);
+
+        if (!room.white && !room.black) {
+            rooms.delete(roomId);
+            console.log(`ROOM DELETED: ${roomId}`);
+        } else {
+            sendGameState(io, roomId);
+        }
+    });
+};
