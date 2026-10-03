@@ -1,0 +1,566 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box
+}
+
+:root{
+    --background:#172a32;
+    --background-light:#304852;
+    --panel:rgba(255,255,255,.08);
+    --panel-border:rgba(255,255,255,.14);
+    --light-square:#f1f3f2;
+    --dark-square:#81949a;
+    --cyan:#20bce9;
+    --text:#fff;
+    --muted:rgba(255,255,255,.72)
+}
+
+html,body{width:100%;min-height:100%}
+
+body{
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:radial-gradient(circle at 50% 15%,var(--background-light),transparent 45%),var(--background);
+    font-family:Arial,Helvetica,sans-serif;
+    color:var(--text);
+    overflow:hidden
+}
+
+.app{
+    width:min(1500px,100%);
+    min-height:100dvh;
+    display:grid;
+    grid-template-columns:minmax(270px,.8fr) minmax(520px,680px) minmax(270px,.8fr);
+    align-items:center;
+    justify-content:center;
+    column-gap:55px;
+    position:relative
+}
+
+.welcome-section{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    transform:translateX(18px)
+}
+
+.logo-container{
+    width:145px;
+    height:145px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:20px
+}
+
+.chessi-logo{
+    width:125px;
+    height:125px;
+    display:block;
+    object-fit:contain;
+    filter:drop-shadow(0 8px 12px rgba(0,0,0,.3))
+}
+
+.welcome-small{
+    margin-top:4px;
+    color:#f1f3f2;
+    font-family:"Cinzel",Georgia,serif;
+    font-size:25px;
+    font-weight:700;
+    letter-spacing:1px
+}
+
+.chessi-title{
+    margin-top:4px;
+    color:var(--cyan);
+    font-family:"Cinzel",Georgia,serif;
+    font-size:68px;
+    line-height:1;
+    font-weight:900;
+    letter-spacing:4px;
+    text-shadow:0 0 18px rgba(32,188,233,.18)
+}
+
+.welcome-divider{
+    width:290px;
+    margin-top:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px
+}
+
+.welcome-divider span:not(.crown){
+    flex:1;
+    height:2px;
+    background:rgba(32,188,233,.7)
+}
+
+.crown{
+    color:var(--cyan);
+    font-family:Georgia,serif;
+    font-size:25px;
+    line-height:1
+}
+
+.welcome-tagline{
+    margin-top:20px;
+    color:rgba(255,255,255,.72);
+    font-family:"Cinzel",Georgia,serif;
+    font-size:16px;
+    font-weight:600;
+    letter-spacing:1px;
+    line-height:1.5;
+    white-space:nowrap
+}
+
+.welcome-tagline b{
+    color:var(--cyan);
+    margin:0 8px
+}
+
+.board-area{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    transform:translateX(12px)
+}
+
+.captured-top{
+    width:min(680px,76vh,100%);
+    min-height:42px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:3px
+}
+
+.captured-bottom{
+    width:min(680px,76vh,100%);
+    min-height:42px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-top:3px
+}
+
+.captured-group{
+    min-height:38px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:2px
+}
+
+.captured-group img{
+    width:32px;
+    height:32px;
+    object-fit:contain;
+    filter:drop-shadow(0 4px 3px rgba(0,0,0,.3))
+}
+
+.board-shell{
+    width:min(680px,76vh,100%);
+    padding:7px 11px;
+    background:rgba(255,255,255,.08);
+    border:1px solid var(--panel-border);
+    border-radius:22px;
+    box-shadow:0 20px 50px rgba(0,0,0,.3);
+    flex-shrink:1
+}
+
+.top-coordinates,.bottom-coordinates{
+    width:100%;
+    height:21px;
+    display:grid;
+    grid-template-columns:repeat(8,1fr);
+    align-items:center;
+    text-align:center;
+    color:rgba(255,255,255,.82);
+    font-size:14px;
+    font-weight:800;
+    user-select:none
+}
+
+.middle{
+    display:grid;
+    grid-template-columns:25px minmax(0,1fr) 25px
+}
+
+.side-coordinates{
+    display:grid;
+    grid-template-rows:repeat(8,1fr);
+    align-items:center;
+    justify-items:center;
+    color:rgba(255,255,255,.82);
+    font-size:14px;
+    font-weight:800;
+    user-select:none
+}
+
+.board-wrap{
+    position:relative;
+    width:100%;
+    aspect-ratio:1/1;
+    overflow:hidden;
+    border-radius:11px;
+    box-shadow:0 12px 30px rgba(0,0,0,.35)
+}
+
+.board{
+    width:100%;
+    height:100%;
+    display:grid;
+    grid-template-columns:repeat(8,1fr);
+    grid-template-rows:repeat(8,1fr);
+    overflow:hidden;
+    border-radius:11px;
+    touch-action:manipulation
+}
+
+.square{
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    overflow:hidden
+}
+
+.square.light{background:var(--light-square)}
+.square.dark{background:var(--dark-square)}
+
+.square.selected{
+    background:rgba(32,188,233,.35);
+    box-shadow:inset 0 0 0 4px var(--cyan);
+    z-index:2
+}
+
+.square.last-move{
+    background-image:linear-gradient(rgba(32,188,233,.24),rgba(32,188,233,.24))
+}
+
+.square.legal::after{
+    content:"";
+    position:absolute;
+    width:17%;
+    aspect-ratio:1;
+    border-radius:50%;
+    background:rgba(20,45,55,.45);
+    z-index:2;
+    pointer-events:none
+}
+
+.square.capture::after{
+    content:"";
+    position:absolute;
+    inset:8%;
+    border:4px solid rgba(32,188,233,.8);
+    border-radius:50%;
+    z-index:2;
+    pointer-events:none
+}
+
+.piece{
+    width:86%;
+    height:86%;
+    object-fit:contain;
+    position:relative;
+    z-index:3;
+    user-select:none;
+    pointer-events:none;
+    -webkit-user-drag:none;
+    filter:drop-shadow(0 5px 3px rgba(0,0,0,.3))
+}
+
+.move-overlay{display:none}
+
+.game-panel{
+    width:270px;
+    min-height:510px;
+    padding:28px 23px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:22px;
+    box-shadow:0 18px 45px rgba(0,0,0,.25);
+    transform:translateX(8px)
+}
+
+.top-controls{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:14px
+}
+
+.top-controls button{
+    width:100%;
+    height:48px;
+    padding:0 12px;
+    font-family: Cinzel;
+    border:none;
+    border-radius:11px;
+    background:var(--cyan);
+    color:#06202a;
+    font-size:15px;
+    font-weight:800;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:transform .12s ease,filter .12s ease
+}
+
+.top-controls button:hover{filter:brightness(1.08)}
+.top-controls button:active{transform:scale(.97)}
+
+.top-controls input{
+    width:100%;
+    height:48px;
+    padding:0 10px;
+    border:1px solid rgba(255,255,255,.18);
+    font-family: cursive;
+    border-radius:11px;
+    outline:none;
+    background:rgba(0,0,0,.22);
+    color:#fff;
+    text-align:center;
+    font-size:15px;
+    font-weight:800;
+    text-transform:uppercase
+}
+
+.top-controls input::placeholder{color:rgba(255,255,255,.65)}
+.top-controls input:focus{border-color:var(--cyan)}
+
+#roomStatus{
+    width:100%;
+    margin-top:24px;
+    color:var(--muted);
+    font-family: cursive;
+    font-size:13px;
+    font-weight:600;
+    text-align:center;
+    line-height:1.5;
+    min-height:38px
+}
+
+#status{
+    width:100%;
+    margin-top:10px;
+    color:#fff;
+    font-family: cursive;
+    font-size:14px;
+    font-weight:800;
+    text-align:center;
+    line-height:1.4;
+    min-height:20px
+}
+
+@media(max-width:1200px){
+    .app{
+        grid-template-columns:minmax(190px,.7fr) minmax(470px,600px) minmax(220px,.7fr);
+        column-gap:30px
+    }
+
+    .game-panel{width:235px}
+    .welcome-section{transform:translateX(10px)}
+    .welcome-small{font-size:23px}
+    .chessi-title{font-size:55px}
+    .logo-container{width:130px;height:130px}
+    .chessi-logo{width:115px;height:115px}
+    .board-area{transform:translateX(7px)}
+}
+
+@media(max-width:950px){
+    body{overflow-y:auto}
+
+    .app{
+        min-height:auto;
+        display:flex;
+        flex-direction:column;
+        justify-content:flex-start;
+        gap:20px;
+        padding:25px 0
+    }
+
+    .welcome-section{order:1;transform:none}
+    .board-area{order:2;transform:none}
+
+    .game-panel{
+        order:3;
+        width:min(500px,94vw);
+        min-height:auto;
+        padding:20px;
+        transform:none
+    }
+
+    .top-controls{
+        flex-direction:row;
+        flex-wrap:wrap;
+        gap:8px
+    }
+
+    .top-controls button,.top-controls input{
+        width:auto;
+        flex:1;
+        min-width:110px
+    }
+
+    .logo-container{
+        width:120px;
+        height:120px;
+        margin-bottom:5px
+    }
+
+    .chessi-logo{width:110px;height:110px}
+    .welcome-small{font-size:22px}
+    .chessi-title{font-size:48px}
+    .welcome-divider{margin-top:15px}
+    .welcome-tagline{margin-top:12px;font-size:15px}
+}
+
+@media(max-width:700px){
+    body{padding:7px}
+
+    .app{
+        width:100%;
+        padding:15px 0;
+        gap:12px
+    }
+
+    .game-panel{
+        width:96vw;
+        padding:14px 10px;
+        border-radius:14px
+    }
+
+    .top-controls{gap:5px}
+
+    .top-controls button{
+        height:38px;
+        padding:0 9px;
+        font-size:11px
+    }
+
+    .top-controls input{
+        height:38px;
+        width:90px;
+        font-size:11px
+    }
+
+    #roomStatus{
+        margin-top:8px;
+        font-size:11px
+    }
+
+    #status{
+        margin-top:2px;
+        font-size:12px;
+        min-height:15px
+    }
+
+    .logo-container{width:95px;height:95px}
+    .chessi-logo{width:88px;height:88px}
+    .welcome-small{font-size:19px}
+    .chessi-title{font-size:42px;letter-spacing:3px}
+    .welcome-divider{width:200px}
+    .welcome-tagline{font-size:13px}
+
+    .captured-top,.captured-bottom{
+        width:min(94vw,65vh);
+        min-height:30px
+    }
+
+    .captured-group{
+        min-height:28px;
+        gap:1px
+    }
+
+    .captured-group img{
+        width:24px;
+        height:24px
+    }
+
+    .board-shell{
+        width:min(94vw,65vh);
+        padding:5px 4px;
+        border-radius:17px
+    }
+
+    .top-coordinates,.bottom-coordinates{
+        height:16px;
+        font-size:10px
+    }
+
+    .middle{grid-template-columns:18px minmax(0,1fr) 18px}
+    .side-coordinates{font-size:10px}
+    .piece{width:87%;height:87%}
+}
+
+@media(max-width:430px){
+    body{padding:4px}
+
+    .app{padding:10px 0}
+
+    .game-panel{
+        width:98vw;
+        padding:10px 6px
+    }
+
+    .top-controls{gap:3px}
+
+    .top-controls button{
+        height:34px;
+        padding:0 6px;
+        font-size:9px
+    }
+
+    .top-controls input{
+        width:82px;
+        height:34px;
+        padding:0 4px;
+        font-size:9px
+    }
+
+    .logo-container{width:75px;height:75px}
+    .chessi-logo{width:70px;height:70px}
+    .welcome-small{font-size:16px}
+    .chessi-title{font-size:36px;letter-spacing:2px}
+    .welcome-divider{width:160px}
+    .welcome-tagline{font-size:11px}
+
+    .captured-group img{
+        width:21px;
+        height:21px
+    }
+
+    .board-shell{
+        width:min(97vw,62vh);
+        padding:4px 3px;
+        border-radius:14px
+    }
+
+    .top-coordinates,.bottom-coordinates{
+        height:14px;
+        font-size:9px
+    }
+
+    .middle{grid-template-columns:16px minmax(0,1fr) 16px}
+    .side-coordinates{font-size:9px}
+}
