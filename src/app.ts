@@ -4,7 +4,7 @@ import { Server } from "socket.io";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import gameRoute from "./routes/gameRoute.ts";
+import gameRoute from "./Routes/gameRoute.ts";
 
 import {
    createRoom,
@@ -12,7 +12,7 @@ import {
    userdisconnection,
    playermoves,
    newGame
-} from "./sockets/chessSocket.ts";
+} from "./Sockets/chessSocket.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
