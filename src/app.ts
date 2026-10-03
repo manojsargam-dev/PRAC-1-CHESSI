@@ -12,7 +12,7 @@ import {
    userdisconnection,
    playermoves,
    newGame
-} from "./Sockets/chessSocket.ts";
+} from "./sockets/chessSocket.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

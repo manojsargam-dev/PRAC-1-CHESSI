@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
-<defs><linearGradient id="g" x1="20%" y1="5%" x2="80%" y2="95%"><stop stop-color="#5d5d5d"/><stop offset=".45" stop-color="#202020"/><stop offset="1" stop-color="#050505"/></linearGradient><filter id="s"><feDropShadow dx="0" dy="4" stdDeviation="2.5" flood-opacity=".35"/></filter></defs>
-<g filter="url(#s)" fill="url(#g)" stroke="#020202" stroke-width="1.5">
-<circle cx="50" cy="27" r="18"/><path d="M37 42 C39 55 30 62 25 74 C22 82 30 87 50 87 C70 87 78 82 75 74 C70 62 61 55 63 42Z"/><path d="M18 91 C27 84 73 84 82 91 L87 103 C73 113 27 113 13 103Z"/>
-</g></svg>
