@@ -28,7 +28,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/api/chess", gameRoute);
+// app.use("/api/chess", gameRoute);
+app.use("/", gameRoute);
 
 io.on("connection", (socket) => {
    console.log("CONNECTED:", socket.id);
